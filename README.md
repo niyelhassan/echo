@@ -1,4 +1,4 @@
-# Echo
+# Echo — live, on-device captions with sound cues and tone
 
 Private, on-device live captions for any Chrome tab, built for deaf and hard-of-hearing viewers. Echo shows what was said, the sounds around it (`[laughter]`, `[applause]`, `[♪ music ♪]`, `[crying]`), and a tentative vocal tone (`[sounds angry]`). No audio leaves the Mac.
 

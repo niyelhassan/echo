@@ -1,37 +1,55 @@
 const DEFAULTS={size:28,theme:'dark',opacity:0.85,lines:3,position:'bottom',tone:true,toneLevel:'balanced',sounds:true,timing:false};
-const status=document.querySelector('#status');
-const token=document.querySelector('#token');
-const fields=Object.keys(DEFAULTS).map(id=>document.getElementById(id));
+const THEMES={dark:['#ffffff','0,0,0','#9fe8d6','255,255,255'],yellow:['#ffe14d','0,0,0','#ffffff','255,225,77'],light:['#111111','255,255,255','#00594c','0,0,0']};
+const $=s=>document.querySelector(s);
+const toggle=$('#toggle'),status=$('#status'),token=$('#token');
+const fields=['theme','opacity','lines','position','tone','toneLevel','sounds','timing'].map(id=>document.getElementById(id));
+let settings={...DEFAULTS},tab,capturedTab=null;
+
+function preview(){
+  const [fg,bg,accent,chip]=THEMES[settings.theme]||THEMES.dark,p=$('#preview');
+  // The popup preview is scaled down so every size still fits.
+  for(const [k,v] of Object.entries({'--pfg':fg,'--pbg':bg,'--paccent':accent,'--pchip':chip,'--popacity':settings.opacity,'--psize':`${Math.round(settings.size*0.55)}px`})) p.style.setProperty(k,v);
+  p.querySelector('.snd').hidden=!settings.sounds;
+  p.querySelector('.tag').hidden=!settings.tone;
+  document.querySelectorAll('.seg button').forEach(b=>b.setAttribute('aria-checked',String(Number(b.dataset.size)===settings.size)));
+}
+async function save(){await chrome.storage.sync.set({settings});preview();}
+
+chrome.storage.sync.get('settings').then(s=>{
+  settings={...DEFAULTS,...s.settings};
+  for(const f of fields) f.type==='checkbox'?f.checked=settings[f.id]:f.value=String(settings[f.id]);
+  preview();
+});
+for(const f of fields) f.onchange=()=>{settings[f.id]=f.type==='checkbox'?f.checked:(typeof DEFAULTS[f.id]==='number'?Number(f.value):f.value);save();};
+document.querySelectorAll('.seg button').forEach(b=>{b.setAttribute('role','radio');b.onclick=()=>{settings.size=Number(b.dataset.size);save();};});
 
 chrome.storage.local.get('token').then(s=>token.value=s.token||'');
 token.onchange=()=>chrome.storage.local.set({token:token.value.trim()});
 
-chrome.storage.sync.get('settings').then(({settings})=>{
-  const values={...DEFAULTS,...settings};
-  for(const field of fields) field.type==='checkbox'?field.checked=values[field.id]:field.value=String(values[field.id]);
-});
-for(const field of fields) field.onchange=async()=>{
-  const settings={};
-  for(const f of fields) settings[f.id]=f.type==='checkbox'?f.checked:(typeof DEFAULTS[f.id]==='number'?Number(f.value):f.value);
-  await chrome.storage.sync.set({settings});
-};
+function show(session){
+  capturedTab=session?.tabId??null;
+  const here=capturedTab!==null&&capturedTab===tab?.id;
+  toggle.textContent=here?'Stop captions':capturedTab!==null?'Caption this tab instead':'Start captions';
+  toggle.classList.toggle('stop',here);
+  $('#state').classList.toggle('on',capturedTab!==null);
+  $('#state span').textContent=here?'Live':capturedTab!==null?'Live in another tab':'Off';
+  const message=session?.status||'';
+  status.textContent=/^(Stopped|Captioning this tab)$/.test(message)?'':message;
+  status.classList.toggle('error',capturedTab===null&&!!message&&!/^(Stopped|Ready)$/.test(message)&&!/…$/.test(message));
+}
+async function refresh(){show(await chrome.storage.session.get(['tabId','status']));}
+chrome.tabs.query({active:true,currentWindow:true}).then(([t])=>{tab=t;refresh();});
+chrome.storage.onChanged.addListener((c,area)=>{if(area==='session')refresh();});
 
-const refresh=()=>chrome.runtime.sendMessage({target:'background',type:'status'}).then(s=>{if(s?.status) status.textContent=s.status;});
-refresh();
-chrome.storage.onChanged.addListener((c,area)=>{if(area==='session'&&c.status) status.textContent=c.status.newValue;});
-
-document.querySelector('#start').onclick=async()=>{
-  const button=document.querySelector('#start');button.disabled=true;
+toggle.onclick=async()=>{
+  toggle.disabled=true;
   try{
-    if(token.value.trim()) await chrome.storage.local.set({token:token.value.trim()});
-    const [tab]=await chrome.tabs.query({active:true,currentWindow:true});
-    const result=await chrome.runtime.sendMessage({target:'background',type:'start',tabId:tab.id});
-    if(result?.error) throw Error(result.error);
-    status.textContent='Captioning this tab';
-  }catch(e){status.textContent=e.message;}
-  finally{button.disabled=false;}
-};
-document.querySelector('#stop').onclick=async()=>{
-  await chrome.runtime.sendMessage({target:'background',type:'stop'});
-  status.textContent='Stopped';
+    if(capturedTab===tab.id) await chrome.runtime.sendMessage({target:'background',type:'stop'});
+    else{
+      if(token.value.trim()) await chrome.storage.local.set({token:token.value.trim()});
+      const result=await chrome.runtime.sendMessage({target:'background',type:'start',tabId:tab.id});
+      if(result?.error) throw Error(result.error);
+    }
+  }catch(e){status.textContent=e.message;status.classList.add('error');}
+  finally{toggle.disabled=false;refresh();}
 };

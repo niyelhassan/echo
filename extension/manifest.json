@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Tone Caption \u2014 Local",
-  "version": "0.3.0",
-  "description": "Private, on-device live captions for any tab, with sound cues like [laughter] and tentative vocal-tone labels.",
+  "name": "Echo \u2014 live captions",
+  "version": "0.4.0",
+  "description": "Live captions for any tab, with sound cues and vocal tone. Runs entirely on your Mac.",
   "minimum_chrome_version": "116",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyefingRTK9yhV8Sd7Nvb3D4hq+ULjlQwKb6/66BtPYcXnOctDBMK/GPeKHdDLElGjyAhQLeDx9TqA/v8GH0ohWfTzSJKKcBKRBXMIyXEa9653EkGh7EJCm7VEpQ0hEnGKc7X98icyitKXDOXeDVqE4sdvcBWF7GIk9cE17KVq6hQXgNiglEPR82O08DzV/kzz75mC/HwPPkI/G0MBDlYOuyIQfvvk26NF0kqqxx+kXQngGN3JMCypYfny91ViBpQyCSmOnEA7VI1R6tktntQksJd2uHKAf+ji62m++a54dKHiKgSREVvMV6zvOfX0mfUZ2XVAq/rp2rV5ivouI55IwIDAQAB",
   "permissions": [
@@ -21,7 +21,13 @@
   },
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Tone Caption"
+    "default_title": "Echo captions",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
   },
   "commands": {
     "toggle-captions": {
@@ -39,5 +45,11 @@
   },
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'; connect-src ws://127.0.0.1:8765"
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
   }
 }

@@ -64,6 +64,8 @@ async def main():
             await sw.evaluate('()=>Promise.all([chrome.storage.local.clear(),chrome.storage.sync.clear()])')
             cdp = await ctx.browser.new_browser_cdp_session()
             control = await ctx.new_page(); await control.goto(f'chrome-extension://{EXTENSION_ID}/popup.html')
+            await control.set_viewport_size({'width': 320, 'height': 600})
+            await control.screenshot(path=str(ROOT/'.build/screens/popup.png'), full_page=True)
             await control.evaluate('''()=>{window.events=[];chrome.runtime.onMessage.addListener(m=>{if(m.type==='event')window.events.push({...m.event,received_ms:Date.now()});});}''')
             page = await ctx.new_page()
             page.on('pageerror', lambda e: results['errors'].append(str(e)))

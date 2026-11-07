@@ -14,7 +14,7 @@ async function status(text,extra={}) {
 // Prefer the native launcher (starts the service and pairs automatically); fall back to a pasted token.
 async function pairingToken() {
   try {
-    await status('Starting the local caption service…');
+    await status('Starting Echo… the first start takes about 20 seconds');
     const reply=await chrome.runtime.sendNativeMessage(HOST,{type:'ensure'});
     if(reply?.ok && reply.token) {
       await chrome.storage.local.set({token:reply.token});
@@ -45,7 +45,7 @@ async function start(tabId) {
     await stop();
     await chrome.scripting.executeScript({target:{tabId},files:['overlay.js']});
     await chrome.storage.session.set({tabId});
-    await chrome.tabs.sendMessage(tabId,{type:'status',message:'Starting local captions…'}).catch(()=>{});
+    await chrome.tabs.sendMessage(tabId,{type:'status',message:'Starting Echo…'}).catch(()=>{});
     const token=await pairingToken();
     // Stream IDs expire within seconds, so request one only after the (possibly slow) service start.
     const streamId=await chrome.tabCapture.getMediaStreamId({targetTabId:tabId});

@@ -1,31 +1,36 @@
-<!doctype html><html lang="en"><meta charset="utf-8"><title>Tone Caption</title>
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Echo</title>
 <link rel="stylesheet" href="popup.css">
 <body>
-<h1>Tone Caption</h1>
-<p class="lede">Captions, sounds and tone for this tab. Runs on your Mac.</p>
-<button id="start">Start captions</button><button id="stop" class="secondary">Stop</button>
-<p id="status" role="status" aria-live="polite">Ready</p>
-<p class="keys">Shortcuts: <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>C</kbd> captions · <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>T</kbd> transcript</p>
+<header><img src="icons/icon-48.png" alt="" width="28" height="28"><h1>Echo</h1><span id="state" class="state"><i></i><span>Off</span></span></header>
 
-<details class="settings"><summary>Settings</summary>
-<fieldset><legend>Caption style</legend>
-  <label>Text size <select id="size"><option value="22">Small</option><option value="28">Medium</option><option value="36">Large</option><option value="46">Extra large</option></select></label>
-  <label>Colors <select id="theme"><option value="dark">White on black</option><option value="yellow">Yellow on black</option><option value="light">Black on white</option></select></label>
-  <label>Background <select id="opacity"><option value="0.6">60%</option><option value="0.85">85%</option><option value="1">Solid</option></select></label>
-  <label>Lines shown <select id="lines"><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></label>
-  <label>Position <select id="position"><option value="bottom">Bottom</option><option value="top">Top</option></select></label>
-</fieldset>
-<fieldset><legend>Cues</legend>
-  <label class="check"><input type="checkbox" id="sounds"> Sound cues, e.g. [laughter], [♪ music ♪]</label>
-  <label class="check"><input type="checkbox" id="tone"> Vocal tone, e.g. [sounds angry]</label>
-  <label>Tone labels <select id="toneLevel"><option value="strict">Only when very clear</option><option value="balanced">Balanced</option><option value="more">Show more (more mistakes)</option></select></label>
-  <label class="check"><input type="checkbox" id="timing"> Show processing time</label>
-</fieldset>
-<p class="hint">Tone labels describe how a voice sounds to an AI model, not what someone feels. They are often wrong and never detect sarcasm.</p>
+<div class="preview" aria-hidden="true"><div class="cap" id="preview">
+  <p class="snd">[laughter]</p>
+  <p><span class="tag">😊 sounds happy</span>That's exactly what we needed.</p>
+</div></div>
+
+<button id="toggle" class="primary">Start captions</button>
+<p id="status" role="status" aria-live="polite"></p>
+
+<section class="quick">
+  <label class="switch"><input type="checkbox" id="sounds"><span>Sound cues</span><small>[laughter] [music]</small></label>
+  <label class="switch"><input type="checkbox" id="tone"><span>Vocal tone</span><small>sounds happy</small></label>
+  <div class="row"><span>Text size</span>
+    <div class="seg" role="radiogroup" aria-label="Text size">
+      <button data-size="22" aria-label="Small">A</button><button data-size="28" aria-label="Medium">A</button><button data-size="36" aria-label="Large">A</button><button data-size="46" aria-label="Extra large">A</button>
+    </div>
+  </div>
+</section>
+
+<details><summary>More</summary>
+  <label class="row">Colors <select id="theme"><option value="dark">White on black</option><option value="yellow">Yellow on black</option><option value="light">Black on white</option></select></label>
+  <label class="row">Background <select id="opacity"><option value="0.6">Light</option><option value="0.85">Medium</option><option value="1">Solid</option></select></label>
+  <label class="row">Lines <select id="lines"><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></label>
+  <label class="row">Position <select id="position"><option value="bottom">Bottom</option><option value="top">Top</option></select></label>
+  <label class="row">Tone labels <select id="toneLevel"><option value="strict">Only when very clear</option><option value="balanced">Balanced</option><option value="more">More often</option></select></label>
+  <label class="row">Processing time <input type="checkbox" id="timing"></label>
+  <p class="note">Tone is a model's guess about how a voice sounds, not what someone feels. It can be wrong and doesn't detect sarcasm.</p>
+  <label class="row token">Pairing token <input id="token" type="password" autocomplete="off" placeholder="Only if not installed"></label>
 </details>
 
-<details><summary>Manual pairing</summary>
-  <p class="hint">Only needed if install.py was not run. Start “Start Local Service.command” and paste its token.</p>
-  <label for="token">Pairing token</label><input id="token" type="password" autocomplete="off">
-</details>
+<footer><span><kbd>⌥⇧C</kbd> captions · <kbd>⌥⇧T</kbd> transcript</span><span>On-device</span></footer>
 <script src="popup.js"></script></body></html>
