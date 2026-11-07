@@ -10,6 +10,7 @@ h1{margin:0;font-size:17px;font-weight:650;flex:1;letter-spacing:-.2px}
   background:linear-gradient(160deg,#2b3a44,#1b2228 55%,#2c2420)}
 .cap{background:rgba(var(--pbg),var(--popacity));color:var(--pfg);border-radius:6px;padding:5px 10px 6px;text-align:center;font-weight:550;font-size:var(--psize);line-height:1.35;max-width:100%}
 .cap p{margin:0}.cap .snd{font-style:italic;font-weight:450;color:var(--paccent)}
+.cap .who{color:#ffc46b;font-size:.62em;font-weight:700;margin-right:.45em;vertical-align:.12em}
 .cap .tag{display:inline-block;font-size:.62em;font-weight:600;border:1px solid rgba(var(--pchip),.35);background:rgba(var(--pchip),.16);border-radius:999px;padding:0 .6em;margin-right:.45em;vertical-align:.12em}
 button{font:inherit;cursor:pointer}
 .primary{width:100%;border:0;border-radius:10px;padding:11px;background:var(--text);color:#111;font-weight:650;font-size:14px}

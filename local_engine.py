@@ -6,6 +6,7 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 import time
 import numpy as np
+from speakers import learnable
 
 RATE = 16000
 PACKET = 1600
@@ -123,6 +124,8 @@ class LocalModels:
         from parakeet_mlx import from_pretrained
         from parakeet_mlx.audio import get_logmel
         from sound_events import REPO as SOUND_REPO, SoundEvents
+        from speakers import FILE as SPEAKER_FILE, REPO as SPEAKER_REPO, SpeakerEmbedder
+        from huggingface_hub import hf_hub_download
         from speech_gate import SpeechGate
         from tone_candidate import CandidateToneModel
         self.mx, self.logmel = mx, get_logmel
@@ -131,12 +134,14 @@ class LocalModels:
         self.asr = self.asr_thread.submit(from_pretrained, self.ASR).result()
         self.tone = CandidateToneModel(model_path=snapshot_download(self.TONE, local_files_only=not download))
         self.sound = SoundEvents(model_path=snapshot_download(SOUND_REPO, local_files_only=not download))
+        self.speaker = SpeakerEmbedder(hf_hub_download(SPEAKER_REPO, SPEAKER_FILE, local_files_only=not download))
         self.gates = {'text': SpeechGate(), 'tone': SpeechGate()}
 
     def warm(self):
         silence = np.zeros(RATE, np.float32)
         self.transcribe(silence + np.float32(1e-4))
         self.sound.scores(silence)
+        self.speaker.embed(silence)
         self.tone.predict(np.random.default_rng(0).normal(0, .01, RATE).astype(np.float32))
 
     def transcribe(self, samples):
@@ -147,6 +152,8 @@ class LocalModels:
     def infer(self, channel, samples):
         if channel == 'sound':
             return self.sound.scores(samples)
+        if channel == 'speaker':
+            return {'vector': self.speaker.embed(samples)}
         if not self.gates[channel].has_speech(samples):
             return {'text': ''} if channel == 'text' else {'tone': None}
         if channel == 'tone':
@@ -183,7 +190,7 @@ class Session:
     def __init__(self, models, send, vad=None):
         self.models, self.send = models, send
         self.segmenter = Segmenter(vad or StreamingVAD())
-        self.queues = {c: asyncio.Queue(maxsize=3) for c in ('text', 'tone', 'sound')}
+        self.queues = {c: asyncio.Queue(maxsize=3) for c in ('text', 'tone', 'sound', 'speaker')}
         self.pools = {c: ThreadPoolExecutor(max_workers=1, thread_name_prefix=c) for c in self.queues}
         self.tasks = [asyncio.create_task(self.worker(c)) for c in self.queues]
         self.failure = None
@@ -192,6 +199,8 @@ class Session:
         self.packets = 0
         from sound_events import CUES
         self.sounds = SoundTracker({c: t for c, (_, t) in CUES.items()})
+        from speakers import SpeakerTracker
+        self.speakers = SpeakerTracker()
 
     def replace(self, queue, job, keep):
         pending = []
@@ -225,6 +234,13 @@ class Session:
         queue.put_nowait(Job(-1, np.concatenate(self.ring), end - len(self.ring)*PACKET/RATE, end, True,
                              time.perf_counter()))
 
+    def submit_speaker(self, job, text):
+        job.text = text
+        queue = self.queues['speaker']
+        if queue.full():
+            queue.get_nowait(); queue.task_done()   # speaker labels are best-effort, like tone
+        queue.put_nowait(job)
+
     async def feed(self, audio):
         if self.failure: raise RuntimeError(self.failure)
         self.ring.append(audio)
@@ -252,7 +268,14 @@ class Session:
                 elif channel == 'tone':
                     if result['tone']:
                         await self.send({'type': 'tone', 'segment': job.segment, 'final': job.final, **result, **timing})
+                elif channel == 'speaker':
+                    seconds = len(job.audio)/RATE
+                    speaker = self.speakers.assign(result['vector'], seconds, learnable(job.text, seconds))
+                    if speaker is not None:
+                        await self.send({'type': 'speaker', 'segment': job.segment, 'speaker': speaker,
+                                         'speakers': len(self.speakers.centroids), **timing})
                 else:
+                    if job.final and result['text']: self.submit_speaker(job, result['text'])
                     await self.send({'type': 'caption', 'segment': job.segment, 'start': job.start, 'end': job.end,
                                      'final': job.final, **result, **timing})
             except Exception as exc:
@@ -263,7 +286,8 @@ class Session:
 
     async def flush(self):
         self.submit(self.segmenter.finish())
-        await asyncio.gather(*(q.join() for q in self.queues.values()))
+        await asyncio.gather(*(q.join() for c, q in self.queues.items() if c != 'speaker'))
+        await self.queues['speaker'].join()   # filled by the text worker, so drained last
 
     async def close(self):
         for task in self.tasks: task.cancel()

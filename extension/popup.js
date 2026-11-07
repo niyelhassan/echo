@@ -1,8 +1,8 @@
-const DEFAULTS={size:28,theme:'dark',opacity:0.85,lines:3,position:'bottom',tone:true,toneLevel:'balanced',sounds:true,timing:false};
+const DEFAULTS={size:28,theme:'dark',opacity:0.85,lines:3,position:'bottom',tone:true,toneLevel:'balanced',sounds:true,speakers:true,timing:false};
 const THEMES={dark:['#ffffff','0,0,0','#9fe8d6','255,255,255'],yellow:['#ffe14d','0,0,0','#ffffff','255,225,77'],light:['#111111','255,255,255','#00594c','0,0,0']};
 const $=s=>document.querySelector(s);
 const toggle=$('#toggle'),status=$('#status'),token=$('#token');
-const fields=['theme','opacity','lines','position','tone','toneLevel','sounds','timing'].map(id=>document.getElementById(id));
+const fields=['theme','opacity','lines','position','tone','toneLevel','sounds','speakers','timing'].map(id=>document.getElementById(id));
 let settings={...DEFAULTS},tab,capturedTab=null;
 
 function preview(){
@@ -11,6 +11,7 @@ function preview(){
   for(const [k,v] of Object.entries({'--pfg':fg,'--pbg':bg,'--paccent':accent,'--pchip':chip,'--popacity':settings.opacity,'--psize':`${Math.round(settings.size*0.55)}px`})) p.style.setProperty(k,v);
   p.querySelector('.snd').hidden=!settings.sounds;
   p.querySelector('.tag').hidden=!settings.tone;
+  p.querySelector('.who').hidden=!settings.speakers;
   document.querySelectorAll('.seg button').forEach(b=>b.setAttribute('aria-checked',String(Number(b.dataset.size)===settings.size)));
 }
 async function save(){await chrome.storage.sync.set({settings});preview();}

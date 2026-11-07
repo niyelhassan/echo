@@ -9,6 +9,7 @@ Private, on-device live captions for any Chrome tab, built for deaf and hard-of-
   - captions: NVIDIA Parakeet TDT 0.6B v2 via MLX, with Silero VAD segmentation;
   - sound cues: CED-base AudioSet tagger on rolling 3 s windows;
   - vocal tone: emotion2vec+ base. It never delays captions.
+  - speaker labels: WeSpeaker ResNet34 voice embeddings, clustered online. A label appears only when the voice changes and at least two voices have been heard; click a name in the transcript to rename it.
 - **Native Messaging launcher.** Clicking **Start captions** starts the service and pairs automatically.
 
 ## Setup (Apple Silicon Mac)
@@ -21,6 +22,7 @@ Private, on-device live captions for any Chrome tab, built for deaf and hard-of-
 
 - **Captions:** 10.6% word error rate against human captions on TED talks, stand-up comedy, a film argument, and a sitcom sketch (Parakeet). Whisper base.en scored 14.4% and Whisper large-v3-turbo 9.2%, but turbo took about 7× longer.
 - **Laughter cues:** on held-out videos, 6 of 9 human-annotated laughs were cued.
+- **Speaker labels:** on two single-speaker TED talks, one stayed at 1 speaker and the other drew 2 short false changes. A film argument stayed correct at 1 speaker, because the other actor only says "mm-hmm"; a Home Alone scene got 3 voices. People who talk over each other without a pause share one caption block and one label (`evaluate_speakers.py`).
 - **Tone:** thresholds are conservative hand-set values. Tone labels are estimates, often wrong, and never detect sarcasm.
 
 `benchmark_real_asr.py`, `evaluate_sounds.py`, `tests/browser_real.py`, and `tests/browser_youtube.py` reproduce these measurements. `VALIDATION.md` contains earlier acted-speech results.
