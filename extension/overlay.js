@@ -1,7 +1,7 @@
 (()=>{
   if(globalThis.__toneCaptionOverlay){globalThis.__toneCaptionOverlay.reset();return;}
 
-  const DEFAULTS={size:28,theme:'dark',opacity:0.85,lines:3,position:'bottom',tone:true,toneLevel:'balanced',sounds:true,speakers:true,timing:false};
+  const DEFAULTS={size:28,theme:'dark',opacity:0.85,lines:3,position:'bottom',tone:true,toneLevel:'balanced',sounds:true,timing:false};
   // Minimum top score / margin over the runner-up before a tone label is shown (tuned on MELD, see VALIDATION.md).
   const TONE_LEVELS={strict:{score:0.9,margin:0.8},balanced:{score:0.75,margin:0.55},more:{score:0.6,margin:0.35}};
   const TONES={Angry:['😠','sounds angry'],Happy:['😊','sounds happy'],Sad:['😢','sounds sad'],Surprised:['😮','sounds surprised'],Fearful:['😨','sounds scared'],Disgusted:['😖','sounds disgusted']};
@@ -9,7 +9,6 @@
   const THEMES={dark:['#ffffff','0,0,0','#9fe8d6','255,255,255'],yellow:['#ffe14d','0,0,0','#ffffff','255,225,77'],light:['#111111','255,255,255','#00594c','0,0,0']};
   // Delivery cues change how the words look (as in SDH and Google's Expressive Captions) instead of adding a line.
   const LOUD=new Set(['shouting','screaming']),SOFT=new Set(['whispering']);
-  const VOICES=['#9fe8d6','#ffc46b','#b9a8ff','#ff9db0','#8fd0ff','#d6e68a','#ffb38a','#d0d0d0'];
   const IDLE_MS=7000;
 
   const host=document.createElement('div');host.id='tone-caption-overlay';
@@ -33,7 +32,6 @@
   .lines p:not(:last-child){opacity:.62}
   .lines p.loud{font-weight:800;text-transform:uppercase;letter-spacing:.3px}
   .lines p.soft{font-style:italic;font-weight:400;opacity:.85}
-  .who{display:inline-block;vertical-align:.12em;font-size:.6em;font-weight:700;letter-spacing:.3px;margin-right:.5em;white-space:nowrap}
   .sound{font-style:italic;font-weight:450;color:var(--accent)}
   .pill{display:none;font-size:12px;font-weight:600;letter-spacing:.5px;color:#fff;background:rgba(0,0,0,.6);border-radius:999px;padding:3px 10px;align-items:center;gap:6px}
   .pill .dot{width:7px;height:7px;border-radius:50%;background:#e5484d}
@@ -49,8 +47,6 @@
   .panel li{padding:4px 0;border-bottom:1px solid #1c2a30}
   .panel time{color:#8fa3ab;font-size:12px;margin-right:6px;font-variant-numeric:tabular-nums}
   .panel .tag,.panel .sound{color:#9fe8d6}
-  .panel .who{font-size:12px;padding:0;margin-right:6px;border-radius:3px}
-  .panel .who:hover{text-decoration:underline;background:transparent}
   .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
   </style>
   <div class="caption idle" part="caption"><span class="pill" aria-hidden="true"><span class="dot"></span><span class="pilltext">CC</span></span><div class="box">
@@ -64,7 +60,7 @@
 
   const $=s=>root.querySelector(s);
   const caption=$('.caption'),lines=$('.lines'),panel=$('.panel'),list=$('.panel ol'),live=$('.sr');
-  let settings={...DEFAULTS},rows=new Map(),active=true,idleTimer,started=Date.now(),soundCount=0,activeSounds=[],transcript=[],names=[],speakerCount=0;
+  let settings={...DEFAULTS},rows=new Map(),active=true,idleTimer,started=Date.now(),soundCount=0,activeSounds=[],transcript=[];
 
   function applySettings(){
     const [fg,bg,accent,chip]=THEMES[settings.theme]||THEMES.dark;
@@ -87,31 +83,15 @@
     if(!TONES[best]||score<level.score||score-second<level.margin) return null;
     return TONES[best];
   }
-  const speakerName=i=>names[i]||`Speaker ${i+1}`;
-  const showSpeakers=()=>settings.speakers&&speakerCount>=2;
-  // Like SDH captions, name the speaker only when the voice changes.
-  function speakerChanges(list){
-    const out=new Set();let last;
-    for(const r of list){if(r.kind!=='speech'||r.speaker==null) continue;if(r.speaker!==last) out.add(r);last=r.speaker;}
-    return out;
-  }
-  function speakerLabel(r,button){
-    const w=document.createElement(button?'button':'span');w.className='who';w.textContent=speakerName(r.speaker);
-    w.style.color=settings.theme==='light'&&!button?'#111':VOICES[r.speaker%VOICES.length];
-    if(button){w.title='Rename speaker';w.onclick=()=>{const n=prompt('Name this speaker',speakerName(r.speaker));if(n?.trim()){names[r.speaker]=n.trim();render();renderTranscript();}};}
-    return w;
-  }
   function setState(text){$('.now').textContent=text;$('.pilltext').textContent=text==='Live'||text==='Listening'?'CC':text;}
 
   function render(){
     const visible=[...rows.values()].filter(r=>r.kind==='sound'?settings.sounds:r.text).sort((a,b)=>a.at-b.at).slice(-6);
-    const changes=showSpeakers()?speakerChanges(visible):new Set();
     lines.replaceChildren(...visible.map(r=>{
       const p=document.createElement('p');
       if(r.kind==='sound'){p.className='sound';p.textContent=soundText(r.cue);return p;}
       const tag=toneTag(r.tone);
       if(settings.sounds&&r.delivery) p.className=r.delivery;
-      if(changes.has(r)) p.append(speakerLabel(r));
       if(tag){const t=document.createElement('span');t.className='tag';t.textContent=`${tag[0]} ${tag[1]}`;p.append(t);}
       p.append(r.text);return p;
     }));
@@ -127,21 +107,19 @@
 
   function renderTranscript(){
     const query=$('.panel input').value.trim().toLowerCase();
-    const changes=showSpeakers()?speakerChanges(transcript.map(e=>e.row||{})):new Set();
     list.replaceChildren(...transcript.filter(e=>!query||e.plain().toLowerCase().includes(query)).map(e=>{
       const li=document.createElement('li'),time=document.createElement('time');time.textContent=e.time;li.append(time);
       if(e.cue){const s=document.createElement('span');s.className='sound';s.textContent=soundText(e.cue);li.append(s);}
-      else{const tag=toneTag(e.row.tone);const label=[e.row.delivery==='loud'?'shouting':e.row.delivery==='soft'?'whispering':null,tag?.[1]].filter(Boolean).join(', ');if(label){const t=document.createElement('span');t.className='tag';t.textContent=`[${label}]`;li.append(t);}if(changes.has(e.row))li.append(speakerLabel(e.row,true));li.append(e.row.text);}
+      else{const tag=toneTag(e.row.tone);const label=[e.row.delivery==='loud'?'shouting':e.row.delivery==='soft'?'whispering':null,tag?.[1]].filter(Boolean).join(', ');if(label){const t=document.createElement('span');t.className='tag';t.textContent=`[${label}]`;li.append(t);}li.append(e.row.text);}
       return li;
     }));
     list.scrollTop=list.scrollHeight;
   }
-  function plainLine(e,changes){
+  function plainLine(e){
     if(e.cue) return `${e.time}  ${soundText(e.cue)}`;
     const tag=toneTag(e.row.tone);
     const label=[e.row.delivery==='loud'?'shouting':e.row.delivery==='soft'?'whispering':null,tag?.[1]].filter(Boolean).join(', ');
-    const who=changes?.has(e.row)?`${speakerName(e.row.speaker)}: `:'';
-    return `${e.time}  ${who}${label?`[${label}] `:''}${e.row.text}`;
+    return `${e.time}  ${label?`[${label}] `:''}${e.row.text}`;
   }
   function addTranscript(entry){
     entry.plain=()=>plainLine(entry);
@@ -170,13 +148,6 @@
     if(e.final||!row.tone?.final) row.tone={...e.tone,final:e.final};
     render();if(!panel.hidden) renderTranscript();
   }
-  function onSpeaker(e){
-    const row=rows.get(`seg-${e.segment}`)||transcript.find(t=>t.row?.segment===e.segment)?.row;
-    speakerCount=Math.max(speakerCount,e.speakers||0);
-    if(!row) return;
-    row.speaker=e.speaker;
-    render();if(!panel.hidden) renderTranscript();
-  }
   function onSound(e){
     activeSounds=e.active||[];
     const speech=[...rows.values()].filter(r=>r.kind==='speech'&&r.text).at(-1);
@@ -198,7 +169,7 @@
     (full && full.tagName!=='VIDEO' ? full : document.documentElement).appendChild(host);
   };
   function reset(){
-    active=true;rows.clear();activeSounds=[];names=[];speakerCount=0;started=Date.now();clearTimeout(idleTimer);
+    active=true;rows.clear();activeSounds=[];started=Date.now();clearTimeout(idleTimer);
     setState('Starting');render();attach();
   }
   globalThis.__toneCaptionOverlay={reset};
@@ -231,7 +202,7 @@
   $('.hide').onclick=toggleTranscript;
   $('.panel input').oninput=renderTranscript;
   $('.close').onclick=()=>chrome.runtime.sendMessage({target:'background',type:'stop'});
-  const text=()=>{const changes=showSpeakers()?speakerChanges(transcript.map(e=>e.row||{})):null;return transcript.map(e=>plainLine(e,changes)).join('\n');};
+  const text=()=>transcript.map(e=>e.plain()).join('\n');
   $('.copy').onclick=async()=>{await navigator.clipboard.writeText(text());$('.copy').textContent='Copied';setTimeout(()=>$('.copy').textContent='Copy',1500);};
   $('.save').onclick=()=>{
     const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([`${document.title}\n${location.href}\n\n${text()}\n`],{type:'text/plain'}));
@@ -249,7 +220,6 @@
     if(e.type==='caption') onCaption(e);
     else if(e.type==='tone') onTone(e);
     else if(e.type==='sound') onSound(e);
-    else if(e.type==='speaker') onSpeaker(e);
   });
   reset();
 })();

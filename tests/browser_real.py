@@ -84,10 +84,10 @@ async def main():
                 deadline = time.time() + seconds
                 while time.time() < deadline:
                     state = await page.evaluate(f'''()=>{{const r={OVERLAY};if(!r)return null;
-                        return {{text:r.querySelector('.lines').innerText,sound:!!r.querySelector('.lines .sound'),tag:!!r.querySelector('.lines .tag'),who:!!r.querySelector('.lines .who')}}}}''')
+                        return {{text:r.querySelector('.lines').innerText,sound:!!r.querySelector('.lines .sound'),tag:!!r.querySelector('.lines .tag')}}}}''')
                     if state and state['text'].strip() and first_text is None:
                         first_text = await page.evaluate('Date.now()') - played
-                    for kind in ('sound', 'tag', 'who'):
+                    for kind in ('sound', 'tag'):
                         if state and state[kind] and kind not in shots:
                             shots[kind] = str(ROOT/f'.build/screens/{video}-{kind}.png')
                             await page.screenshot(path=shots[kind])
@@ -101,7 +101,7 @@ async def main():
                 await asyncio.sleep(.3)
                 shots['transcript'] = str(ROOT/f'.build/screens/{video}-transcript.png'); await page.screenshot(path=shots['transcript'])
                 entries = await page.evaluate(f'''()=>[...{OVERLAY}.querySelectorAll('.panel li')].map(li=>({{
-                    sound:li.querySelector('.sound')?.textContent||null,tag:li.querySelector('.tag')?.textContent||null,who:li.querySelector('.who')?.textContent||null,
+                    sound:li.querySelector('.sound')?.textContent||null,tag:li.querySelector('.tag')?.textContent||null,
                     text:[...li.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join(' ')}}))''')
                 await page.evaluate(f"()=>{OVERLAY}.querySelector('.hide').click()")
                 position = await page.locator('video').evaluate('v=>v.currentTime')
@@ -116,9 +116,8 @@ async def main():
                     'reference_words': len(ref.split()), 'insertions': out.insertions,
                     'sound_cues_rendered': [e['sound'] for e in entries if e['sound']],
                     'tone_tags_rendered': [e['tag'] for e in entries if e['tag']],
-                    'speaker_changes': [e['who'] for e in entries if e['who']],
                     'caption_events': sum(e['type'] == 'caption' for e in events), 'screens': shots,
-                    'transcript': [e['sound'] or f"{e['who'] or ''} {e['tag'] or ''} {e['text']}".strip() for e in entries]}
+                    'transcript': [e['sound'] or f"{e['tag'] or ''} {e['text']}".strip() for e in entries]}
                 print(video, {k: v for k, v in results['videos'][video].items() if k not in ('transcript', 'screens')}, flush=True)
 
             # Settings apply live to an open overlay.

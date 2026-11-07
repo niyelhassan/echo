@@ -60,8 +60,7 @@ class WorkerTests(unittest.IsolatedAsyncioTestCase):
         class Models:
             def infer(self,channel,a):
                 if channel=='sound':return {'laughter':.9}
-                if channel=='speaker':return {'vector':np.ones(4,np.float32)/2}
-                return {'text':'this is a test'} if channel=='text' else {'tone':{'label':'Uncertain'}}
+                return {'text':'test'} if channel=='text' else {'tone':{'label':'Uncertain'}}
         events=[]
         async def send(e):events.append(e)
         s=Session(Models(),send,vad=lambda _:True)
@@ -71,7 +70,6 @@ class WorkerTests(unittest.IsolatedAsyncioTestCase):
             final_text=[e for e in events if e['type']=='caption' and e['final']]
             self.assertEqual([e['end'] for e in final_text],[2.5])
             self.assertTrue(any(e['type']=='tone' and e['final'] for e in events))
-            self.assertEqual([(e['segment'],e['speaker']) for e in events if e['type']=='speaker'],[(0,0)])
             sounds=[e for e in events if e['type']=='sound']
             self.assertEqual(len(sounds),1)
             self.assertEqual(sounds[0]['started'],['laughter'])
