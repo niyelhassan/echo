@@ -1,6 +1,6 @@
-# Echo — live, on-device captions with sound cues and tone
+# Tonal — live, on-device captions with sound cues and tone
 
-Private, on-device live captions for any Chrome tab, built for deaf and hard-of-hearing viewers. Echo shows what was said, the sounds around it (`[laughter]`, `[applause]`, `[♪ music ♪]`, `[crying]`), and a tentative vocal tone (`[sounds angry]`). No audio leaves the Mac.
+Private, on-device live captions for any Chrome tab, built for deaf and hard-of-hearing viewers. Tonal shows what was said, the sounds around it (`[laughter]`, `[applause]`, `[♪ music ♪]`, `[crying]`), and a tentative vocal tone (`[sounds angry]`). No audio leaves the Mac.
 
 ## How it works
 
@@ -13,7 +13,7 @@ Private, on-device live captions for any Chrome tab, built for deaf and hard-of-
 
 ## Setup (Apple Silicon Mac)
 
-1. Double-click **Install Tone Caption.command**. Alternatively, run `uv sync && uv run python install.py`, which downloads about 3 GB of models and registers the launcher with Chrome.
+1. Double-click **Install Tonal.command**. Alternatively, run `uv sync && uv run python install.py`, which downloads about 3 GB of models and registers the launcher with Chrome.
 2. In `chrome://extensions`, enable **Developer mode**, click **Load unpacked**, and select the `extension` folder. The extension ID must be `pnangodkiechjldahinmjhkmkoaideib`.
 3. On any tab, click the extension and then **Start captions**, or press **Alt+Shift+C**. **Alt+Shift+T** toggles the transcript.
 

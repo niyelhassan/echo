@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Echo \u2014 live captions",
+  "name": "Tonal \u2014 live captions",
   "version": "0.4.0",
   "description": "Live captions for any tab, with sound cues and vocal tone. Runs entirely on your Mac.",
   "minimum_chrome_version": "116",
@@ -21,7 +21,7 @@
   },
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Echo captions",
+    "default_title": "Tonal captions",
     "default_icon": {
       "16": "icons/icon-16.png",
       "32": "icons/icon-32.png",

@@ -1,4 +1,4 @@
-# Tone Caption: Chrome extension + fully local service
+# Tonal: Chrome extension + fully local service
 
 The implemented version targets **Apple Silicon macOS** (tested on an M3 Pro), Chrome 116+, and English audio. The extension captures the tab you select and overlays revisable captions with tentative vocal tone labels. The companion service runs MLX Whisper base.en, emotion2vec+ base, and Silero VAD on your Mac. No OpenRouter key or cloud inference is used.
 
@@ -6,7 +6,7 @@ The implemented version targets **Apple Silicon macOS** (tested on an M3 Pro), C
 
 1. Double-click **Start Local Service.command** in this folder. Leave the terminal open. Wait for “Ready” and copy its pairing token. If a service is already running on port 8765, use that instance or stop it with Ctrl-C first.
 2. Open `chrome://extensions`, enable **Developer mode**, choose **Load unpacked**, and select this project's **extension** folder.
-3. Open a normal webpage with audio/video. Click the Tone Caption extension, paste the token once, and click **Caption this tab**. Start playback.
+3. Open a normal webpage with audio/video. Click the Tonal extension, paste the token once, and click **Caption this tab**. Start playback.
 4. Use **Stop captions**, or the overlay's ×, to stop. Navigating or closing the captured tab stops capture. Start again on the next page.
 
 The token is saved in extension-local storage, not synced. Its service copy is `.build/local-token` (owner-readable only). Audio is buffered in RAM, not recorded. No microphone permission is requested. Capturing a tab preserves its audible playback. Only one tab can be processed at a time.

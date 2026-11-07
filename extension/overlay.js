@@ -54,7 +54,7 @@
       <button class="open" aria-label="Show transcript (Alt+Shift+T)">Transcript</button><button class="close" aria-label="Stop captions">✕</button></div>
     <div class="lines"></div>
   </div></div>
-  <aside class="panel" hidden aria-label="Caption transcript"><header><strong>Echo transcript</strong><button class="copy">Copy</button><button class="save">Save</button><button class="hide" aria-label="Hide transcript">✕</button></header>
+  <aside class="panel" hidden aria-label="Caption transcript"><header><strong>Tonal transcript</strong><button class="copy">Copy</button><button class="save">Save</button><button class="hide" aria-label="Hide transcript">✕</button></header>
     <input type="search" placeholder="Search transcript" aria-label="Search transcript"><ol></ol></aside>
   <div class="sr" role="log" aria-live="polite"></div>`;
 
@@ -206,7 +206,7 @@
   $('.copy').onclick=async()=>{await navigator.clipboard.writeText(text());$('.copy').textContent='Copied';setTimeout(()=>$('.copy').textContent='Copy',1500);};
   $('.save').onclick=()=>{
     const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([`${document.title}\n${location.href}\n\n${text()}\n`],{type:'text/plain'}));
-    a.download=`echo-transcript-${new Date().toISOString().slice(0,16).replace(/[:T]/g,'-')}.txt`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+    a.download=`tonal-transcript-${new Date().toISOString().slice(0,16).replace(/[:T]/g,'-')}.txt`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
   };
 
   chrome.runtime.onMessage.addListener((e,sender,respond)=>{

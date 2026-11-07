@@ -24,7 +24,7 @@ final class Demo: NSObject, NSApplicationDelegate {
         window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 1000, height: 850),
                           styleMask: [.titled, .closable, .miniaturizable, .resizable],
                           backing: .buffered, defer: false)
-        window.title = "Tone Caption — Live Emotion Demo"
+        window.title = "Tonal — Live Emotion Demo"
         let stack = NSStackView()
         stack.orientation = .vertical
         stack.spacing = 12

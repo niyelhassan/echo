@@ -19,7 +19,7 @@ def register(directories):
     launcher = ROOT/'native_host.sh'
     launcher.write_text(f'#!/bin/zsh\nexec "{ROOT}/.venv/bin/python" "{ROOT}/native_host.py" "$@"\n')
     launcher.chmod(launcher.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
-    manifest = {'name': HOST, 'description': 'Tone Caption local service launcher', 'path': str(launcher),
+    manifest = {'name': HOST, 'description': 'Tonal local service launcher', 'path': str(launcher),
                 'type': 'stdio', 'allowed_origins': [f'chrome-extension://{EXTENSION_ID}/']}
     written = []
     for directory in directories:

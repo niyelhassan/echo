@@ -1,4 +1,4 @@
-"""Render the Echo toolbar icons. Usage: uv run --with pillow python make_icons.py"""
+"""Render the Tonal toolbar icons. Usage: uv run --with pillow python make_icons.py"""
 from pathlib import Path
 from PIL import Image, ImageDraw
 
