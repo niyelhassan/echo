@@ -1,0 +1,43 @@
+{
+  "manifest_version": 3,
+  "name": "Tone Caption \u2014 Local",
+  "version": "0.3.0",
+  "description": "Private, on-device live captions for any tab, with sound cues like [laughter] and tentative vocal-tone labels.",
+  "minimum_chrome_version": "116",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyefingRTK9yhV8Sd7Nvb3D4hq+ULjlQwKb6/66BtPYcXnOctDBMK/GPeKHdDLElGjyAhQLeDx9TqA/v8GH0ohWfTzSJKKcBKRBXMIyXEa9653EkGh7EJCm7VEpQ0hEnGKc7X98icyitKXDOXeDVqE4sdvcBWF7GIk9cE17KVq6hQXgNiglEPR82O08DzV/kzz75mC/HwPPkI/G0MBDlYOuyIQfvvk26NF0kqqxx+kXQngGN3JMCypYfny91ViBpQyCSmOnEA7VI1R6tktntQksJd2uHKAf+ji62m++a54dKHiKgSREVvMV6zvOfX0mfUZ2XVAq/rp2rV5ivouI55IwIDAQAB",
+  "permissions": [
+    "activeTab",
+    "tabCapture",
+    "offscreen",
+    "scripting",
+    "storage",
+    "nativeMessaging"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Tone Caption"
+  },
+  "commands": {
+    "toggle-captions": {
+      "suggested_key": {
+        "default": "Alt+Shift+C"
+      },
+      "description": "Start or stop captions on this tab"
+    },
+    "toggle-transcript": {
+      "suggested_key": {
+        "default": "Alt+Shift+T"
+      },
+      "description": "Show or hide the transcript"
+    }
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src ws://127.0.0.1:8765"
+  }
+}
