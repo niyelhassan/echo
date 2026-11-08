@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tonal: live captions for any Chrome tab, on your Mac</title>
+<meta name="description" content="Tonal captions any Chrome tab on your Mac: what was said, sounds like [laughter] and [applause], and a tentative read of vocal tone. Audio never leaves your computer.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121110" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Tonal: captions that catch the laugh, too">
+<meta property="og:description" content="On-device captions for any Chrome tab, with sound cues and vocal tone. Built for deaf and hard-of-hearing viewers. No audio leaves your Mac.">
+<meta property="og:image" content="og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Tonal: captions that catch the laugh, too.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="fonts/instrument-sans.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="styles.css">
+<script src="main.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top"><i aria-hidden="true"></i>Tonal</a>
+    <nav aria-label="Primary">
+      <a href="#how">How it works</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#install">Install</a>
+      <a href="https://github.com/niyelhassan/echo">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <div class="hero" id="top">
+    <div class="wrap">
+      <h1>Captions that catch the laugh, too.</h1>
+      <p class="sub">Live captions for any Chrome tab, with the sounds and tone around the words. Made on your Mac, for deaf and hard-of-hearing viewers.</p>
+      <p class="cta">
+        <a class="button" href="#install">Install Tonal</a>
+        <a class="textlink" href="#how">See how it works</a>
+      </p>
+      <p class="fine">Free to use. Needs an Apple Silicon Mac and Chrome 116 or later. Audio is processed on your Mac and never uploaded.</p>
+    </div>
+
+    <div class="wrap">
+      <figure class="demo" aria-labelledby="demo-caption">
+        <div class="chrome">
+          <span class="title">Short film</span>
+          <button type="button" class="play" data-toggle aria-pressed="false">
+            <svg viewBox="0 0 16 16" aria-hidden="true" class="i-pause"><rect x="4" y="3" width="2.5" height="10"/><rect x="9.5" y="3" width="2.5" height="10"/></svg>
+            <svg viewBox="0 0 16 16" aria-hidden="true" class="i-play"><path d="M5 3v10l8-5z"/></svg>
+            <span data-toggle-label>Pause</span>
+          </button>
+        </div>
+        <div class="scene" aria-hidden="true">
+          <div class="video">
+            <span class="idle" data-idle hidden><b></b>CC</span>
+            <div class="cc"><div class="cc-lines" data-captions>
+              <p>Tight is one word for it.<span class="tag">(frustrated)</span></p>
+            </div></div>
+          </div>
+          <div class="tx">
+            <div class="tx-head"><strong>Transcript</strong><span>Copy</span><span>Save</span></div>
+            <ol data-transcript>
+              <li><time>00:55</time>Have you seen the new schedule?</li>
+              <li><time>00:58</time>They moved everything up.</li>
+              <li><time>01:02</time>So the client called this morning about the launch date.</li>
+              <li><time>01:05</time>Two weeks? You’re kidding me.<span class="tag">(surprised)</span></li>
+              <li><time>01:08</time>I wish I was.</li>
+              <li><time>01:09</time><span class="sound">[laughter]</span></li>
+              <li><time>01:11</time>Tight is one word for it.<span class="tag">(frustrated)</span></li>
+            </ol>
+          </div>
+        </div>
+        <figcaption class="caption" id="demo-caption">A re-creation of the Tonal overlay. Captions revise as words come in, then settle when the sentence ends. A tone appears after a line only when the model is confident. Each finished line is added to the transcript.</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <section id="how" aria-labelledby="how-h">
+    <div class="wrap">
+      <h2 id="how-h">How it works</h2>
+      <p class="intro">There’s no upload, cloud key or per-site setup. You start captions on the tab that’s playing.</p>
+      <ol class="steps">
+        <li>
+          <h3>Start captions on a tab</h3>
+          <p>Open any video in Chrome and press <kbd>Alt</kbd> <kbd>Shift</kbd> <kbd>C</kbd>, or click the extension and choose Start captions.</p>
+        </li>
+        <li>
+          <h3>Audio goes to a local service</h3>
+          <p>Chrome passes the tab’s audio to a small program running on your Mac. You still hear the video, and your microphone isn’t used.</p>
+        </li>
+        <li>
+          <h3>Captions appear over the video</h3>
+          <p>They work in fullscreen and can be dragged anywhere. <kbd>Alt</kbd> <kbd>Shift</kbd> <kbd>T</kbd> opens the full transcript.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section aria-labelledby="what-h">
+    <div class="wrap split">
+      <div>
+        <h2 id="what-h">What appears on screen</h2>
+        <p class="intro">Besides the words, Tonal marks laughter, music and other sounds, and sometimes how a voice sounded.</p>
+        <dl class="defs">
+          <div><dt>Speech</dt><dd>Transcribed by NVIDIA Parakeet on Apple’s MLX. Lines update every 0.4&nbsp;s and settle after a short pause.</dd></div>
+          <div><dt>Sound cues</dt><dd>21 sounds, including laughter, applause, music, crying, sirens and doorbells, checked once a second.</dd></div>
+          <div><dt>Vocal tone</dt><dd>Shown only when one tone clearly outscores the rest. Use it as a hint: it’s often wrong and can’t detect sarcasm.</dd></div>
+          <div><dt>Transcript</dt><dd>Timestamped and searchable. You can copy it or save it as a text file.</dd></div>
+        </dl>
+      </div>
+      <figure class="file">
+        <figcaption>captions-2026-11-07.txt</figcaption>
+        <pre tabindex="0" aria-label="Example saved transcript"><code><span class="t">00:41</span>  So I told him the ceiling was leaking.
+<span class="t">00:44</span>  <span class="cue">[laughter]</span>
+<span class="t">00:47</span>  I said I’d be there by six! <span class="cue">(frustrated)</span>
+<span class="t">00:52</span>  <span class="cue">[♪ music ♪]</span></code></pre>
+      </figure>
+    </div>
+  </section>
+
+  <section aria-labelledby="tested-h">
+    <div class="wrap">
+      <h2 id="tested-h">Tested on real video</h2>
+      <p class="intro">Tonal was measured against human-made captions on these four kinds of video.</p>
+      <ul class="pairs">
+        <li>
+          <h3>Stand-up</h3>
+          <p>On videos it wasn’t tuned on, Tonal marked 6 of the 9 laughs that human captioners marked.</p>
+        </li>
+        <li>
+          <h3>Talks and lectures</h3>
+          <p>Long sentences are split at the quietest moment, so captions keep up with a speaker who rarely pauses.</p>
+        </li>
+        <li>
+          <h3>Film scenes</h3>
+          <p>The speech detector is tuned to pick up shouted lines over a music score. Tone tags only appear when the model is confident.</p>
+        </li>
+        <li>
+          <h3>Sitcoms</h3>
+          <p>Quick exchanges are captioned line by line. Tonal doesn’t say who is speaking yet, so cuts between people can be hard to follow.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="privacy" aria-labelledby="privacy-h">
+    <div class="wrap">
+      <h2 id="privacy-h">Privacy</h2>
+      <p class="intro">Every model runs on your Mac. Nothing is uploaded, and there’s no cloud service or account.</p>
+      <ul class="pairs">
+        <li><h3>Local models</h3><p>Parakeet, CED and emotion2vec run on Apple Silicon. After a one-time download, captioning works offline.</p></li>
+        <li><h3>One allowed address</h3><p>The extension’s security policy only permits <code>ws://127.0.0.1:8765</code>. You can check this in <code>manifest.json</code>.</p></li>
+        <li><h3>Nothing saved to disk</h3><p>Audio is kept in memory while it’s processed, then discarded.</p></li>
+        <li><h3>No microphone access</h3><p>Tonal captures the tab you choose. Your mic is never used.</p></li>
+        <li><h3>Paired connection</h3><p>The local service only responds to the extension it’s paired with, using a token only your user account can read.</p></li>
+        <li><h3>Transcripts stay in the tab</h3><p>Nothing leaves the page unless you copy or save it.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section aria-labelledby="faq-h">
+    <div class="wrap faq-grid">
+      <h2 id="faq-h">Questions</h2>
+      <dl class="faq">
+        <div>
+          <dt>How accurate are the captions?</dt>
+          <dd>Across TED talks, stand-up, a film scene and a sitcom sketch, Tonal got 10.6% of words wrong compared with human captions. Whisper large-v3-turbo scored 9.2% but took about 7 times as long, so Tonal uses Parakeet. These were measured on 7 November 2026 on an M3 Pro, and the scripts are in the repo.</dd>
+        </div>
+        <div>
+          <dt>Can I trust the tone labels?</dt>
+          <dd>Use them as a hint. They describe how a voice sounds to a model, not what someone feels. The thresholds were set by hand, the labels are often wrong, and sarcasm isn’t detected. You can make them stricter or turn them off.</dd>
+        </div>
+        <div>
+          <dt>What do I need?</dt>
+          <dd>An Apple Silicon Mac and Chrome 116 or later, with English audio. There’s no Windows or Linux version, and you can caption one tab at a time.</dd>
+        </div>
+        <div>
+          <dt>Can I change how captions look?</dt>
+          <dd>Yes. There are four text sizes, three color schemes (white or yellow on black, or black on white), a background from 60% to solid, two to four lines, and top or bottom placement. Settings sync with Chrome.</dd>
+        </div>
+        <div>
+          <dt>Does it work in fullscreen?</dt>
+          <dd>On ordinary web players, yes. Picture-in-picture, DRM-protected video and some embedded players haven’t been tested.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section id="install" aria-labelledby="install-h">
+    <div class="wrap">
+      <h2 id="install-h">Install</h2>
+      <ol class="install">
+        <li>
+          <p>Clone the repository and run the installer. It downloads about 3&nbsp;GB of models the first time.</p>
+          <div class="code">
+            <pre tabindex="0" aria-label="Install commands"><code>git clone https://github.com/niyelhassan/echo.git
+cd echo
+uv sync && uv run python install.py</code></pre>
+            <button type="button" class="copy" data-copy>Copy</button>
+          </div>
+        </li>
+        <li><p>Open <code>chrome://extensions</code>, turn on Developer mode, click Load unpacked and select the <code>extension</code> folder.</p></li>
+        <li><p>On a tab with audio, press <kbd>Alt</kbd> <kbd>Shift</kbd> <kbd>C</kbd>.</p></li>
+      </ol>
+      <p class="more">Setup notes and test scripts are in the <a href="https://github.com/niyelhassan/echo">GitHub repository</a>.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Tonal</span>
+    <span><a href="https://github.com/niyelhassan/echo">Source</a> · <a href="https://github.com/niyelhassan/echo/blob/main/VALIDATION.md">Validation notes</a> · <a href="https://github.com/niyelhassan/echo/issues">Issues</a></span>
+  </div>
+</footer>
+</body>
+</html>
